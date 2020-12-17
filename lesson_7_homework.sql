@@ -9,27 +9,30 @@ SELECT * FROM orders;
 INSERT INTO orders(user_id) VALUES
 (1), (2), (3), (213), (23), (313), (322), (2), (6), (444), (23), (13), (14), (17), (1);
 
--- Создаем внешний ключ к таблице users
-ALTER TABLE  orders 
-	ADD CONSTRAINT orders_user_id_fk
-		FOREIGN KEY (user_id) REFERENCES users(id)
-			ON DELETE SET NULL;
 
--- Выводим пользователей ,которые хоть раз сделали заказ
-SELECT 
-id,name 
-FROM users 
-WHERE id IN (SELECT user_id FROM orders);
-
+-- Выводим пользователей ,которые делали заказы и убираем повторения
+SELECT DISTINCT 
+	u.id AS user_id,
+	u.name AS user_name
+FROM 
+	users AS u
+JOIN 
+	orders AS o
+ON u.id = o.user_id;	
+		
 -- ЗАДАНИЕ 2 Выведите список товаров products и разделов catalogs, который соответствует товару
 SELECT * FROM products;
 SELECT * FROM catalogs;
 
 SELECT 
-	id,
-	name AS product,
-	(SELECT name FROM catalogs WHERE id = catalog_id) AS category 
-FROM products;
+	p.name AS product,
+	c.name AS category
+FROM 
+	products AS p
+JOIN
+	catalogs AS c
+ON
+	p.catalog_id = c.id;
 
 -- ЗАДАНИЕ 3 (по желанию) Пусть имеется таблица рейсов flights (id, from, to) и 
 -- таблица городов cities (label, name). Поля from, to и label содержат английские названия городов,
