@@ -77,8 +77,15 @@ INSERT cities (label, name) VALUES
 SELECT * FROM flights;
 SELECT * FROM cities;
 
-SELECT 
-	id,
-	(SELECT name FROM cities WHERE label = flights.flights  ) AS from_,
-	(SELECT name FROM cities WHERE label = flights.to_  ) AS to_
-FROM flights;
+SELECT
+	f.id AS id, 
+	c.name AS flights,
+	ci.name AS to_
+FROM 
+	flights AS f
+LEFT JOIN 
+	cities AS c
+ON f.flights = c.label
+LEFT JOIN 
+	cities AS ci
+ON f.to_ = ci.label ;
